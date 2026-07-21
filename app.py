@@ -34,13 +34,13 @@ def validate_access_key(access_key):
     return True, None
 
 def fetch_book_data(book_title):
-    url = f"https://openlibrary.org/search.json?title={book_title}"
+    url = "https://openlibrary.org/search.json"
     headers = {
         "User-Agent": "OpenLibrary-App"
     }
 
     try:
-        response = requests.get(url, headers=headers, timeout=15)
+        response = requests.get(url, headers=headers, params={"title": book_title}, timeout=15)
     except requests.RequestException as exc:
         st.error(f"Network error while fetching data: {exc}")
         return None
