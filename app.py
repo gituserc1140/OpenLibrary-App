@@ -4,8 +4,21 @@ import requests
 GITHUB_REPO_URL = "https://github.com/gituserc1140/OpenLibrary-App"
 GITHUB_SPONSORS_URL = "https://github.com/sponsors/gituserc1140"
 
-def is_valid_access_key(access_key):
-    return len(access_key.strip()) >= 8
+def validate_access_key(access_key):
+    provided_key = access_key.strip()
+    if not provided_key:
+        return False, "Access key is required."
+
+    expected_key = str(st.secrets.get("APP_ACCESS_KEY", "")).strip()
+    if expected_key:
+        if provided_key == expected_key:
+            return True, None
+        return False, "Access key is invalid."
+
+    if len(provided_key) < 8:
+        return False, "Access key must be at least 8 characters."
+
+    return True, None
 
 def fetch_book_data(book_title):
     url = f"https://openlibrary.org/search.json?title={book_title}"
@@ -57,22 +70,22 @@ def display_search_results(data):
 def main():
     st.set_page_config(page_title="OpenLibrary Book Search", page_icon="📚")
     st.title("OpenLibrary Book Search App")
-    st.caption("Search public OpenLibrary books. This app requires an access key to run searches.")
+    st.caption(
+        "Search public OpenLibrary books. This app uses a custom access key gate; OpenLibrary itself is public."
+    )
 
     render_support_links()
+
+    if not str(st.secrets.get("APP_ACCESS_KEY", "")).strip():
+        st.info("APP_ACCESS_KEY is not configured, so a minimum-length key check is used.")
 
     access_key = st.text_input("Enter your app access key", type="password")
     book_title = st.text_input("Enter the book title to search")
 
-    if not access_key:
-        st.warning("Enter an access key to enable search.")
-
     if st.button("Search", type="primary"):
-        if not access_key:
-            st.error("Access key is required.")
-            return
-        if not is_valid_access_key(access_key):
-            st.error("Access key must be at least 8 characters.")
+        is_valid, error_message = validate_access_key(access_key)
+        if not is_valid:
+            st.error(error_message)
             return
         if not book_title:
             st.error("Please enter a book title.")
