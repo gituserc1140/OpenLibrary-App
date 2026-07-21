@@ -2,8 +2,9 @@ import streamlit as st
 import requests
 import re
 
-GITHUB_REPO_URL = "https://github.com/gituserc1140/OpenLibrary-App"
-GITHUB_SPONSORS_URL = "https://github.com/sponsors/gituserc1140"
+DEFAULT_GITHUB_REPO_URL = "https://github.com/gituserc1140/OpenLibrary-App"
+DEFAULT_GITHUB_SPONSORS_URL = "https://github.com/sponsors/gituserc1140"
+APP_USER_AGENT = "OpenLibrary-App/1.0 (https://github.com/gituserc1140/OpenLibrary-App)"
 
 def get_expected_access_key():
     raw_key = st.secrets.get("APP_ACCESS_KEY")
@@ -15,7 +16,7 @@ def get_expected_access_key():
     st.warning("APP_ACCESS_KEY is configured but not a string. Using fallback key validation instead.")
     return ""
 
-def is_strong_access_key(provided_key):
+def has_required_character_types(provided_key):
     return (
         len(provided_key) >= 8
         and re.search(r"[a-z]", provided_key)
@@ -35,7 +36,7 @@ def validate_access_key(access_key):
             return True, None
         return False, "Access key is invalid."
 
-    if not is_strong_access_key(provided_key):
+    if not has_required_character_types(provided_key):
         return False, "Access key must be 8+ chars and include upper/lowercase, a number, and a special character."
 
     return True, None
@@ -43,7 +44,7 @@ def validate_access_key(access_key):
 def fetch_book_data(book_title):
     url = "https://openlibrary.org/search.json"
     headers = {
-        "User-Agent": "OpenLibrary-App"
+        "User-Agent": APP_USER_AGENT
     }
 
     try:
@@ -67,12 +68,15 @@ def fetch_book_data(book_title):
     return None
 
 def render_support_links():
+    repo_url = str(st.secrets.get("GITHUB_REPO_URL", DEFAULT_GITHUB_REPO_URL))
+    sponsors_url = str(st.secrets.get("GITHUB_SPONSORS_URL", DEFAULT_GITHUB_SPONSORS_URL))
+
     st.subheader("Project Links")
     col1, col2 = st.columns(2)
     with col1:
-        st.link_button("GitHub Repository", GITHUB_REPO_URL, use_container_width=True)
+        st.link_button("GitHub Repository", repo_url, use_container_width=True)
     with col2:
-        st.link_button("GitHub Sponsors", GITHUB_SPONSORS_URL, use_container_width=True)
+        st.link_button("GitHub Sponsors", sponsors_url, use_container_width=True)
 
 def display_search_results(data):
     results = data.get("docs", [])

@@ -56,4 +56,5 @@ APP_ACCESS_KEY = "your-expected-key"
 
 ## Reference
 
-This app concept is similar to: https://github.com/gituserc1140/TranscriptionApp
+This app concept is similar to: https://github.com/gituserc1140/TranscriptionApp  
+Both apps are Streamlit-based tools that collect user-provided input in the frontend and then process results from an external API workflow.
