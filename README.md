@@ -39,7 +39,7 @@ streamlit run app.py
 
 ### Optional: configure a required access key
 
-Create `/home/runner/work/OpenLibrary-App/OpenLibrary-App/.streamlit/secrets.toml` and add:
+Create `.streamlit/secrets.toml` and add:
 
 ```toml
 APP_ACCESS_KEY = "your-expected-key"

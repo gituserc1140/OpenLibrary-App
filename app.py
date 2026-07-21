@@ -4,12 +4,15 @@ import requests
 GITHUB_REPO_URL = "https://github.com/gituserc1140/OpenLibrary-App"
 GITHUB_SPONSORS_URL = "https://github.com/sponsors/gituserc1140"
 
+def get_expected_access_key():
+    return str(st.secrets.get("APP_ACCESS_KEY", "")).strip()
+
 def validate_access_key(access_key):
     provided_key = access_key.strip()
     if not provided_key:
         return False, "Access key is required."
 
-    expected_key = str(st.secrets.get("APP_ACCESS_KEY", "")).strip()
+    expected_key = get_expected_access_key()
     if expected_key:
         if provided_key == expected_key:
             return True, None
@@ -76,7 +79,7 @@ def main():
 
     render_support_links()
 
-    if not str(st.secrets.get("APP_ACCESS_KEY", "")).strip():
+    if not get_expected_access_key():
         st.info("APP_ACCESS_KEY is not configured, so a minimum-length key check is used.")
 
     access_key = st.text_input("Enter your app access key", type="password")
