@@ -4,11 +4,12 @@ import requests
 GITHUB_REPO_URL = "https://github.com/gituserc1140/OpenLibrary-App"
 GITHUB_SPONSORS_URL = "https://github.com/sponsors/gituserc1140"
 
-def fetch_book_data(api_key, book_title):
+def is_valid_access_key(access_key):
+    return len(access_key.strip()) >= 8
+
+def fetch_book_data(book_title):
     url = f"https://openlibrary.org/search.json?title={book_title}"
     headers = {
-        "Authorization": f"Token {api_key}",
-        "X-API-Key": api_key,
         "User-Agent": "OpenLibrary-App"
     }
 
@@ -19,7 +20,7 @@ def fetch_book_data(api_key, book_title):
         return None
 
     if response.status_code in (401, 403):
-        st.error("The API key was rejected. Please check your key and try again.")
+        st.error("Request was denied by the service. Please try again later.")
         return None
 
     if response.status_code == 200:
@@ -56,25 +57,28 @@ def display_search_results(data):
 def main():
     st.set_page_config(page_title="OpenLibrary Book Search", page_icon="📚")
     st.title("OpenLibrary Book Search App")
-    st.caption("Search books from OpenLibrary using your API key.")
+    st.caption("Search public OpenLibrary books. This app requires an access key to run searches.")
 
     render_support_links()
 
-    api_key = st.text_input("Enter your OpenLibrary API Key", type="password")
+    access_key = st.text_input("Enter your app access key", type="password")
     book_title = st.text_input("Enter the book title to search")
 
-    if not api_key:
-        st.warning("Enter an API key to enable search.")
+    if not access_key:
+        st.warning("Enter an access key to enable search.")
 
     if st.button("Search", type="primary"):
-        if not api_key:
-            st.error("API key is required.")
+        if not access_key:
+            st.error("Access key is required.")
+            return
+        if not is_valid_access_key(access_key):
+            st.error("Access key must be at least 8 characters.")
             return
         if not book_title:
             st.error("Please enter a book title.")
             return
 
-        data = fetch_book_data(api_key, book_title)
+        data = fetch_book_data(book_title)
         if data:
             display_search_results(data)
 

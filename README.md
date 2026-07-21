@@ -4,16 +4,16 @@ OpenLibrary-App is a Streamlit application that lets users search OpenLibrary fo
 
 ## Features
 
-- Enter an API key directly in the app UI
+- Enter an app access key directly in the app UI
 - Search books by title
 - Display title, author, and first publish year
 - Built-in GitHub Repository and GitHub Sponsors buttons
 
 ## How it works
 
-1. The user enters an API key in the Streamlit frontend.
-2. The app sends requests with the provided key.
-3. The app behavior changes based on the key/request result (for example, missing key, rejected key, or successful response).
+1. The user enters an app access key in the Streamlit frontend.
+2. The app validates the key before allowing searches.
+3. The app sends the search request to OpenLibrary and displays the results.
 
 ## Setup and run
 
@@ -39,7 +39,7 @@ streamlit run app.py
 ## Usage
 
 1. Open the Streamlit URL shown in your terminal.
-2. Enter your API key.
+2. Enter your app access key.
 3. Enter a book title.
 4. Click **Search** to view results.
 5. Use the GitHub and GitHub Sponsors buttons at the top of the app to visit project/support pages.
