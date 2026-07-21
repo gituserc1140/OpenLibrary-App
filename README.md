@@ -4,16 +4,15 @@ OpenLibrary-App is a Streamlit application that lets users search OpenLibrary fo
 
 ## Features
 
-- Enter an app access key directly in the app UI
-- Optional strict key validation with `APP_ACCESS_KEY` in Streamlit secrets
 - Search books by title
 - Display title, author, and first publish year
+- Built-in app-side rate limiting (5 searches per 60 seconds per browser session)
 - Built-in GitHub Repository and GitHub Sponsors buttons
 
 ## How it works
 
-1. The user enters an app access key in the Streamlit frontend.
-2. The app validates the key before allowing searches (if `APP_ACCESS_KEY` is configured, the key must match exactly; otherwise, it must meet strong format requirements).
+1. The user enters a book title in the Streamlit frontend.
+2. The app enforces a per-session rate limit of 5 searches per 60 seconds.
 3. The app sends the search request to OpenLibrary and displays the results.
 
 ## Setup and run
@@ -37,21 +36,12 @@ pip install streamlit requests
 streamlit run app.py
 ```
 
-### Optional: configure a required access key
-
-Create `.streamlit/secrets.toml` and add:
-
-```toml
-APP_ACCESS_KEY = "your-expected-key"
-```
-
 ## Usage
 
 1. Open the Streamlit URL shown in your terminal.
-2. Enter your app access key (must match `APP_ACCESS_KEY` if configured).
-   - If `APP_ACCESS_KEY` is not configured, enter a key with 8+ characters that includes uppercase, lowercase, a number, and a special character.
-3. Enter a book title.
-4. Click **Search** to view results.
+2. Enter a book title.
+3. Click **Search** to view results.
+4. If you exceed 5 searches within 60 seconds in the same browser session, wait for the cooldown message and retry.
 5. Use the GitHub and GitHub Sponsors buttons at the top of the app to visit project/support pages.
 
 ## Reference
