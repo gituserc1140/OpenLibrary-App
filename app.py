@@ -1,45 +1,28 @@
 import streamlit as st
 import requests
-import re
+import time
 
 DEFAULT_GITHUB_REPO_URL = "https://github.com/gituserc1140/OpenLibrary-App"
 DEFAULT_GITHUB_SPONSORS_URL = "https://github.com/sponsors/gituserc1140"
 APP_USER_AGENT = "OpenLibrary-App/1.0 (https://github.com/gituserc1140/OpenLibrary-App)"
+RATE_LIMIT_MAX_REQUESTS = 5
+RATE_LIMIT_WINDOW_SECONDS = 60
 
-def get_expected_access_key():
-    raw_key = st.secrets.get("APP_ACCESS_KEY")
-    if raw_key is None:
-        return ""
-    if isinstance(raw_key, str):
-        return raw_key.strip()
 
-    st.warning("APP_ACCESS_KEY is configured but not a string. Using fallback key validation instead.")
-    return ""
+def is_rate_limited():
+    now = time.time()
+    window_start = now - RATE_LIMIT_WINDOW_SECONDS
+    request_times = st.session_state.get("request_times", [])
+    request_times = [timestamp for timestamp in request_times if timestamp >= window_start]
 
-def has_required_character_types(provided_key):
-    return (
-        len(provided_key) >= 8
-        and re.search(r"[a-z]", provided_key)
-        and re.search(r"[A-Z]", provided_key)
-        and re.search(r"\d", provided_key)
-        and re.search(r"[^\w\s]", provided_key)
-    )
+    if len(request_times) >= RATE_LIMIT_MAX_REQUESTS:
+        st.session_state["request_times"] = request_times
+        retry_after_seconds = max(1, int(request_times[0] + RATE_LIMIT_WINDOW_SECONDS - now))
+        return True, retry_after_seconds
 
-def validate_access_key(access_key):
-    provided_key = access_key.strip()
-    if not provided_key:
-        return False, "Access key is required."
-
-    expected_key = get_expected_access_key()
-    if expected_key:
-        if provided_key == expected_key:
-            return True, None
-        return False, "Access key is invalid."
-
-    if not has_required_character_types(provided_key):
-        return False, "Access key must be 8+ chars and include upper/lowercase, a number, and a special character."
-
-    return True, None
+    request_times.append(now)
+    st.session_state["request_times"] = request_times
+    return False, None
 
 def fetch_book_data(book_title):
     url = "https://openlibrary.org/search.json"
@@ -95,23 +78,17 @@ def main():
     st.set_page_config(page_title="OpenLibrary Book Search", page_icon="📚")
     st.title("OpenLibrary Book Search App")
     st.caption(
-        "Search public OpenLibrary books. The access key is an app-level gate configured by this app owner, not OpenLibrary."
+        "Search public OpenLibrary books. No API key is required for this endpoint."
     )
 
     render_support_links()
 
-    if not get_expected_access_key():
-        st.info(
-            "APP_ACCESS_KEY is not configured, so the fallback key must include upper/lowercase, a number, and a special character."
-        )
-
-    access_key = st.text_input("Enter your app access key", type="password")
     book_title = st.text_input("Enter the book title to search")
 
     if st.button("Search", type="primary"):
-        is_valid, error_message = validate_access_key(access_key)
-        if not is_valid:
-            st.error(error_message)
+        is_limited, retry_after_seconds = is_rate_limited()
+        if is_limited:
+            st.error(f"Rate limit reached. Please wait about {retry_after_seconds} seconds and try again.")
             return
         if not book_title:
             st.error("Please enter a book title.")
