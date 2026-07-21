@@ -1,11 +1,21 @@
 import streamlit as st
 import requests
+import re
 
 GITHUB_REPO_URL = "https://github.com/gituserc1140/OpenLibrary-App"
 GITHUB_SPONSORS_URL = "https://github.com/sponsors/gituserc1140"
 
 def get_expected_access_key():
     return str(st.secrets.get("APP_ACCESS_KEY", "")).strip()
+
+def is_strong_access_key(provided_key):
+    return (
+        len(provided_key) >= 8
+        and re.search(r"[a-z]", provided_key)
+        and re.search(r"[A-Z]", provided_key)
+        and re.search(r"\d", provided_key)
+        and re.search(r"[^\w\s]", provided_key)
+    )
 
 def validate_access_key(access_key):
     provided_key = access_key.strip()
@@ -18,8 +28,8 @@ def validate_access_key(access_key):
             return True, None
         return False, "Access key is invalid."
 
-    if len(provided_key) < 8:
-        return False, "Access key must be at least 8 characters."
+    if not is_strong_access_key(provided_key):
+        return False, "Access key must be 8+ chars and include upper/lowercase, a number, and a symbol."
 
     return True, None
 
@@ -61,7 +71,7 @@ def display_search_results(data):
     results = data.get("docs", [])
     if not results:
         st.info("No books found for this title.")
-        return None
+        return
 
     st.write("Search Results:")
     for book in results:
@@ -74,7 +84,7 @@ def main():
     st.set_page_config(page_title="OpenLibrary Book Search", page_icon="📚")
     st.title("OpenLibrary Book Search App")
     st.caption(
-        "Search public OpenLibrary books. This app uses a custom access key gate; OpenLibrary itself is public."
+        "Search public OpenLibrary books. This app requires a custom access key, while OpenLibrary itself is public."
     )
 
     render_support_links()

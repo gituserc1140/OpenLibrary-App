@@ -13,7 +13,7 @@ OpenLibrary-App is a Streamlit application that lets users search OpenLibrary fo
 ## How it works
 
 1. The user enters an app access key in the Streamlit frontend.
-2. The app validates the key before allowing searches (`APP_ACCESS_KEY` match when configured, otherwise minimum-length check).
+2. The app validates the key before allowing searches (`APP_ACCESS_KEY` match when configured, otherwise strong-format check).
 3. The app sends the search request to OpenLibrary and displays the results.
 
 ## Setup and run
