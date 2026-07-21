@@ -1,0 +1,66 @@
+/* ── Page background & base text ── */
+.stApp {
+    background-color: #F5EFE0;
+    color: #3B2A1A;
+}
+
+/* ── Sidebar (if ever used) ── */
+[data-testid="stSidebar"] {
+    background-color: #E8D9BC;
+}
+
+/* ── Main title ── */
+h1, h2, h3 {
+    color: #6B2737;
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+/* ── Caption / subtext ── */
+.stCaption, .stMarkdown p {
+    color: #5C4A32;
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+/* ── Text input ── */
+[data-testid="stTextInput"] input {
+    background-color: #FBF7EE;
+    border: 1px solid #A07850;
+    color: #3B2A1A;
+    border-radius: 4px;
+}
+
+/* ── Primary button ── */
+[data-testid="stButton"] > button[kind="primary"] {
+    background-color: #6B2737;
+    color: #FBF7EE;
+    border: none;
+    border-radius: 4px;
+}
+[data-testid="stButton"] > button[kind="primary"]:hover {
+    background-color: #8B3A4A;
+    color: #FBF7EE;
+}
+
+/* ── Secondary / link buttons ── */
+[data-testid="stButton"] > button,
+[data-testid="stLinkButton"] > a {
+    background-color: #C4A265;
+    color: #3B2A1A;
+    border: 1px solid #A07850;
+    border-radius: 4px;
+}
+[data-testid="stButton"] > button:hover,
+[data-testid="stLinkButton"] > a:hover {
+    background-color: #A07850;
+    color: #FBF7EE;
+}
+
+/* ── Divider ── */
+hr {
+    border-color: #C4A265;
+}
+
+/* ── Info / error / success boxes ── */
+[data-testid="stAlert"] {
+    border-radius: 4px;
+}
