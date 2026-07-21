@@ -6,7 +6,14 @@ GITHUB_REPO_URL = "https://github.com/gituserc1140/OpenLibrary-App"
 GITHUB_SPONSORS_URL = "https://github.com/sponsors/gituserc1140"
 
 def get_expected_access_key():
-    return str(st.secrets.get("APP_ACCESS_KEY", "")).strip()
+    raw_key = st.secrets.get("APP_ACCESS_KEY")
+    if raw_key is None:
+        return ""
+    if isinstance(raw_key, str):
+        return raw_key.strip()
+
+    st.warning("APP_ACCESS_KEY is configured but not a string. Using fallback key validation instead.")
+    return ""
 
 def is_strong_access_key(provided_key):
     return (
@@ -29,7 +36,7 @@ def validate_access_key(access_key):
         return False, "Access key is invalid."
 
     if not is_strong_access_key(provided_key):
-        return False, "Access key must be 8+ chars and include upper/lowercase, a number, and a symbol."
+        return False, "Access key must be 8+ chars and include upper/lowercase, a number, and a special character."
 
     return True, None
 
@@ -84,14 +91,14 @@ def main():
     st.set_page_config(page_title="OpenLibrary Book Search", page_icon="📚")
     st.title("OpenLibrary Book Search App")
     st.caption(
-        "Search public OpenLibrary books. This app requires a custom access key, while OpenLibrary itself is public."
+        "Search public OpenLibrary books. The access key is an app-level gate configured by this app owner, not OpenLibrary."
     )
 
     render_support_links()
 
     if not get_expected_access_key():
         st.info(
-            "APP_ACCESS_KEY is not configured, so the fallback key must include upper/lowercase, a number, and a symbol."
+            "APP_ACCESS_KEY is not configured, so the fallback key must include upper/lowercase, a number, and a special character."
         )
 
     access_key = st.text_input("Enter your app access key", type="password")
