@@ -40,7 +40,7 @@ def fetch_book_data(book_title):
     }
 
     try:
-        response = requests.get(url, headers=headers, params={"title": book_title}, timeout=15)
+        response = requests.get(url, headers=headers, params={"title": book_title}, timeout=10)
     except requests.RequestException as exc:
         st.error(f"Network error while fetching data: {exc}")
         return None
@@ -90,7 +90,9 @@ def main():
     render_support_links()
 
     if not get_expected_access_key():
-        st.info("APP_ACCESS_KEY is not configured, so a minimum-length key check is used.")
+        st.info(
+            "APP_ACCESS_KEY is not configured, so the fallback key must include upper/lowercase, a number, and a symbol."
+        )
 
     access_key = st.text_input("Enter your app access key", type="password")
     book_title = st.text_input("Enter the book title to search")
