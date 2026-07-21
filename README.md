@@ -47,7 +47,3 @@ streamlit run app.py
 4. If you exceed 5 searches within 60 seconds in the same browser session, wait for the cooldown message and retry.
 5. Use the GitHub and GitHub Sponsors buttons at the top of the app to visit project/support pages.
 
-## Reference
-
-This app concept is similar to: https://github.com/gituserc1140/TranscriptionApp  
-Both apps are Streamlit-based tools that collect user-provided input in the frontend and then process results from an external API workflow.
