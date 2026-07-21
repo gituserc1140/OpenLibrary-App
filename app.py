@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import time
+import pathlib
 
 DEFAULT_GITHUB_REPO_URL = "https://github.com/gituserc1140/OpenLibrary-App"
 DEFAULT_GITHUB_SPONSORS_URL = "https://github.com/sponsors/gituserc1140"
@@ -74,8 +75,17 @@ def display_search_results(data):
         st.write(f"First Publish Year: {book.get('first_publish_year', 'N/A')}")
         st.write("---")
 
+_CSS_PATH = pathlib.Path(__file__).parent / "styles.css"
+
+
+def _inject_css():
+    css = _CSS_PATH.read_text(encoding="utf-8")
+    st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
+
+
 def main():
     st.set_page_config(page_title="OpenLibrary Book Search", page_icon="📚")
+    _inject_css()
     st.title("OpenLibrary Book Search App")
     st.caption(
         "Search public OpenLibrary books. No API key is required for this endpoint."
