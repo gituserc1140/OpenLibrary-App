@@ -1,6 +1,9 @@
 # OpenLibrary-App
 
 OpenLibrary-App is a Streamlit application that lets users search OpenLibrary for books from a simple web interface.
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://openlibrary-app-kkdz2blvnprpwcxzcnjbin.streamlit.app/)
+[![GitHub](https://img.shields.io/badge/View%20on-GitHub-181717?logo=github&style=flat-square)](https://github.com/gituserc1140/BlogMobileApp3)
+[![Sponsor me on GitHub](https://img.shields.io/badge/Sponsor%20me%20on-GitHub-EA4AAA?logo=githubsponsors&style=flat-square)](https://github.com/sponsors/gituserc1140)
 
 ## Features
 
